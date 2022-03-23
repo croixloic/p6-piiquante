@@ -21,7 +21,7 @@ mongoose.connect('mongodb+srv://croix:Psyderma349dd10@cours.2nso3.mongodb.net/my
     next();
   });
 
-  app.use(bodyParser.json());
+  app.use(express.json());
   app.use('/images', express.static(path.join(__dirname, 'images')));
   app.use('/api/sauces', saucesRoutes);
   app.use('/api/auth',userRoutes);
