@@ -6,24 +6,40 @@ const bcrypt = require("bcrypt");
 
 const jwt = require('jsonwebtoken');
 
+
+const passwordValidator = require('password-validator');
 // Appel du model User
 
 const User = require("../models/user");
 
 // Logique métier : User Inscription
 
+const schema = new passwordValidator();
+  schema
+  .is().min(8)                                    
+  .is().max(100)                                                            
+  .has().lowercase()                              
+  .has().digits(2)                                
+  .has().not().spaces()                           
+  .is().not().oneOf(['Passw0rd', 'Password123']); 
+
 exports.signup = (req, res, next) => {
+  if(!schema.validate(req.body.password)) {
+    throw  {error: "invalide"}  
+}
+  else {
   bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-      const user = new User({
-        email: req.body.email,
-        password: hash
-      });
-      user.save()
-        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-        .catch(error => res.status(400).json({ error }));
-    })
-    .catch(error => res.status(500).json({ error }));
+  .then(hash => {
+    const user = new User({
+      email: req.body.email,
+      password: hash
+    });
+    user.save()
+    .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+    .catch(error => res.status(400).json({ error }));
+  })
+  .catch(error => res.status(500).json({ error }));
+}
 };
 
 // Logique métier : User Connexion
