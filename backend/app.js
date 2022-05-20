@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_DB,
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limite chaque IP a 100 requete par windowMs
     handler: function (req, res,) {
-      return res.status(429).json({
+      return res.status(400).json({
         error: 'Vous avez envoyé trop de requetes, merci de patienter'
       })
     }

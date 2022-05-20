@@ -44,7 +44,7 @@ exports.modifySauce = (req, res, next) => {
       }
     : { ...req.body };
   Sauce.updateOne(
-    { _id: req.params.id },
+    { _id: req.params.id,  userId: req.auth.userId },
     { ...sauceObject, _id: req.params.id }
   )
     .then(() => res.status(200).json({ message: "Sauce modifié !" }))
@@ -52,7 +52,7 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
+  Sauce.findOne({ _id: req.params.id, userId: req.auth.userId })
     .then((sauce) => {
       const filename = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, () => {
